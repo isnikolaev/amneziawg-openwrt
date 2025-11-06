@@ -82,7 +82,7 @@ jobs:
           else
             base_url="https://downloads.openwrt.org/releases/${{ inputs.openwrt_version }}/targets/${{ inputs.openwrt_target }}/${{ inputs.openwrt_subtarget }}"
           fi
-          curl -fsL "$base_url/config.buildinfo" > .config
+          curl -fsL "https://raw.githubusercontent.com/isnikolaev/awg-openwrt1/refs/heads/master/config.buildinfo" > .config
           echo "CONFIG_PACKAGE_kmod-crypto-lib-chacha20=y" >> .config
           echo "CONFIG_PACKAGE_kmod-crypto-lib-chacha20poly1305=y" >> .config
           echo "CONFIG_PACKAGE_kmod-crypto-chacha20poly1305=y" >> .config
@@ -107,6 +107,7 @@ jobs:
           make tools/install -j $(nproc)
           make toolchain/install -j $(nproc)
           make target/linux/compile -j $(nproc)
+          echo 9469a6c8c449c47e503c05678ea1559d > ./build_dir/target-*/linux-*/linux-*/.vermagic
           export LC_ALL=C
           for deadlink in $(find . -follow -type l -printf "" 2>&1 | sed -e "s/find: '\(.*\)': Too many levels of symbolic links.*/\1/"); do
             echo "Deleting dead link: ${deadlink}"
